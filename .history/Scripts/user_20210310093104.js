@@ -1,35 +1,55 @@
-"use strict";
+
 ((core) => {
     class User {
+        // Instance Variables
+        private m_displayName: string;
+        private m_emailAddress: string;
+        private m_username: string;
+        private m_password: string;
+
+        get DisplayName() :string 
+        {
+            return this.m_displayName;
+        }
+
+        set DisplayName(value:string) 
+        {
+            this.m_displayName = value;
+        }
+
+        get EmailAddress() :string 
+        {
+            return this.m_emailAddress;
+        }
+
+        set EmailAddress(value:string) 
+        {
+            this.m_emailAddress = value;
+        }
+
+        get Username() :string 
+        {
+            return this.m_username;
+        }
+
+        set Username(value:string) 
+        {
+            this.m_username = value;
+        }
+        
+        get Password() :string
+        {
+            return this.m_password;
+        }
+        set Password(value:string) 
+        {
+            this.m_password = value;
+        }
         constructor(displayName = "", emailAddress = "", username = "", password = "") {
             this.DisplayName = displayName;
             this.EmailAddress = emailAddress;
             this.Username = username;
             this.Password = password;
-        }
-        get DisplayName() {
-            return this.m_displayName;
-        }
-        set DisplayName(value) {
-            this.m_displayName = value;
-        }
-        get EmailAddress() {
-            return this.m_emailAddress;
-        }
-        set EmailAddress(value) {
-            this.m_emailAddress = value;
-        }
-        get Username() {
-            return this.m_username;
-        }
-        set Username(value) {
-            this.m_username = value;
-        }
-        get Password() {
-            return this.m_password;
-        }
-        set Password(value) {
-            this.m_password = value;
         }
         toString() {
             return `Display Name     : ${this.DisplayName} \nEmail Address : ${this.EmailAddress} \nUsername : ${this.Username}`;

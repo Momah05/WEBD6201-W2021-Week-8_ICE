@@ -1,12 +1,6 @@
 "use strict";
 ((core) => {
     class User {
-        constructor(displayName = "", emailAddress = "", username = "", password = "") {
-            this.DisplayName = displayName;
-            this.EmailAddress = emailAddress;
-            this.Username = username;
-            this.Password = password;
-        }
         get DisplayName() {
             return this.m_displayName;
         }
@@ -30,6 +24,12 @@
         }
         set Password(value) {
             this.m_password = value;
+        }
+        constructor(displayName = "", emailAddress = "", username = "", password = "") {
+            this.DisplayName = displayName;
+            this.EmailAddress = emailAddress;
+            this.Username = username;
+            this.Password = password;
         }
         toString() {
             return `Display Name     : ${this.DisplayName} \nEmail Address : ${this.EmailAddress} \nUsername : ${this.Username}`;
