@@ -1,11 +1,7 @@
+"use strict";
 
-namespace core
-{
-    export class Router {
-        // Instance Variables
-        private m_activeLink: string;
-        private m_routingTable: string[];
-
+(function (core) {
+    class Router {
         // constructors
         constructor() 
         {
@@ -13,12 +9,12 @@ namespace core
         }
 
         // Public Properties (getters and setters)
-        get ActiveLink(): string
+        get ActiveLink() 
         {
             return this.m_activeLink;
         }
 
-        set ActiveLink(link:string) 
+        set ActiveLink(link) 
         {
             this.m_activeLink = link;
         }
@@ -31,7 +27,7 @@ namespace core
          * @param {string} route
          * @returns {void}
          */
-        public Add(route:string) :void
+        Add(route) 
         {
             this.m_routingTable.push(route);
         }
@@ -43,7 +39,7 @@ namespace core
          * @param {string} routingTable
          * @returns {void}
          */
-        public  AddTable(routingTable: string[]) :void
+        AddTable(routingTable) 
         {
             this.m_routingTable = routingTable;
         }
@@ -55,7 +51,7 @@ namespace core
          * @param {string} route
          * @returns {number}
          */
-        public Find(route:string) :number
+        Find(route) 
         {
             return this.m_routingTable.indexOf(route);
         }
@@ -68,7 +64,7 @@ namespace core
          * @param {string} route
          * @returns {boolean}
          */
-        public Remove(route:string) :boolean
+        Remove(route) 
         {
             if (this.Find(route) > -1) {
                 this.m_routingTable.splice(this.Find(route), 1);
@@ -82,16 +78,14 @@ namespace core
          *
          * @returns {string}
          */
-        public ToString() :string
+        ToString() 
         {
             return this.m_routingTable.toString();
         }
     }
-    
-}
+    core.Router = Router;
+})(core || (core = {}));
 
-
-//TODO: need to move the code below into its own file
 let router = new core.Router();
 router.AddTable(["/", 
                  "/home", 
