@@ -251,7 +251,7 @@ namespace core
 
     function displayEdit():void
     {
-      let key = router.LinkData;
+      let key = location.hash.substring(1);
 
       let contact = new core.Contact();
 

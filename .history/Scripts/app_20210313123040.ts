@@ -12,7 +12,6 @@ namespace core
      {
       $(`#${router.ActiveLink}`).removeClass("active"); // removes highlighted link
       router.ActiveLink = link;
-      router.LinkData = data;
       loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
       $(`#${router.ActiveLink}`).addClass("active"); // applies highlighted link to new page
       history.pushState({},"", router.ActiveLink); // this replaces the url displayed in the browser
@@ -231,7 +230,7 @@ namespace core
 
         $("button.edit").on("click", function(){
           // TODO Fix
-          loadLink("edit", $(this).val().toString());
+          location.href = "/edit#" + $(this).val();
          });
 
          $("button.delete").on("click", function(){
@@ -251,7 +250,7 @@ namespace core
 
     function displayEdit():void
     {
-      let key = router.LinkData;
+      let key = location.hash.substring(1);
 
       let contact = new core.Contact();
 
