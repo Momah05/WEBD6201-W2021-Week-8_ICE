@@ -1,38 +1,24 @@
 "use strict";
 var core;
 (function (core) {
-    function addLinkEvents() {
-        $("ul>li>a").off("click");
-        $("ul>li>a").off("mouseover");
-        $("ul>li>a").on("click", function () {
-            loadLink($(this).attr("id"));
-        });
-        $("ul>li>a").on("mouseover", function () {
-            $(this).css("cursor", "pointer");
-        });
-    }
-    function highlightActiveLink(link) {
-        $(`#${router.ActiveLink}`).removeClass("active");
-        if (link == "logout") {
-            sessionStorage.clear();
-            router.ActiveLink = "login";
-        }
-        else {
-            router.ActiveLink = link;
-        }
-        $(`#${router.ActiveLink}`).addClass("active");
-    }
     function loadLink(link, data = "") {
-        highlightActiveLink(link);
+        $(`#${router.ActiveLink}`).removeClass("active");
+        router.ActiveLink = link;
         router.LinkData = data;
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+        $(`#${router.ActiveLink}`).addClass("active");
         history.pushState({}, "", router.ActiveLink);
     }
     function loadHeader(pageName) {
         $.get("./Views/components/header.html", function (data) {
             $("header").html(data);
             $(`#${pageName}`).addClass("active");
-            addLinkEvents();
+            $("a").on("click", function () {
+                loadLink($(this).attr("id"));
+            });
+            $("a").on("mouseover", function () {
+                $(this).css('cursor', 'pointer');
+            });
         });
     }
     function loadContent(pageName, callback) {
@@ -47,20 +33,22 @@ var core;
             $("footer").html(data);
         });
     }
-    function displayHome() { }
-    function displayAbout() { }
-    function displayProjects() { }
-    function displayServices() { }
+    function displayHome() {
+        console.log("Home page function called");
+    }
+    function displayAbout() {
+    }
+    function displayProjects() {
+    }
+    function displayServices() {
+    }
     function testFullName() {
         let messageArea = $("#messageArea").hide();
         let fullNamePattern = /([A-Z][a-z]{1,25})+(\s|,|-)([A-Z][a-z]{1,25})+(\s|,|-)*/;
         $("#fullName").on("blur", function () {
             if (!fullNamePattern.test($(this).val().toString())) {
                 $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitlalized last name.");
+                messageArea.show().addClass("alert alert-danger").text("Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitlalized last name.");
             }
             else {
                 messageArea.removeAttr("class").hide();
@@ -73,10 +61,7 @@ var core;
         $("#contactNumber").on("blur", function () {
             if (!contactNumberPattern.test($(this).val().toString())) {
                 $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Contact Number. Country code and area code are both optional");
+                messageArea.show().addClass("alert alert-danger").text("Please enter a valid Contact Number. Country code and area code are both optional");
             }
             else {
                 messageArea.removeAttr("class").hide();
@@ -89,10 +74,7 @@ var core;
         $("#emailAddress").on("blur", function () {
             if (!emailAddressPattern.test($(this).val().toString())) {
                 $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Email Address.");
+                messageArea.show().addClass("alert alert-danger").text("Please enter a valid Email Address.");
             }
             else {
                 messageArea.removeAttr("class").hide();
@@ -119,13 +101,12 @@ var core;
                 }
             }
         });
-        loadLink("contact");
     }
     function displayContactList() {
         authGuard();
         if (localStorage.length > 0) {
             let contactList = document.getElementById("contactList");
-            let data = "";
+            let data;
             let keys = Object.keys(localStorage);
             let index = 1;
             for (const key of keys) {
@@ -195,8 +176,7 @@ var core;
             let newUser = new core.User();
             $.get("./Data/users.json", function (data) {
                 for (const user of data.users) {
-                    if (username.val() == user.Username &&
-                        password.val() == user.Password) {
+                    if (username.val() == user.Username && password.val() == user.Password) {
                         newUser.fromJSON(user);
                         success = true;
                         break;
@@ -209,10 +189,7 @@ var core;
                 }
                 else {
                     username.trigger("focus").trigger("select");
-                    messageArea
-                        .show()
-                        .addClass("alert alert-danger")
-                        .text("Error: Invalid login information");
+                    messageArea.show().addClass("alert alert-danger").text("Error: Invalid login information");
                 }
             });
         });
@@ -221,60 +198,61 @@ var core;
             loadLink("home");
         });
     }
-    function displayRegister() { }
+    function displayRegister() {
+    }
     function toggleLogin() {
-        let contactListLink = $("#contactListLink")[0];
         if (sessionStorage.getItem("user")) {
             $("#loginListItem").html(`<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`);
+            $("#logout").on("click", function () {
+                sessionStorage.clear();
+                loadLink("login");
+            });
+            $("#logout").on("mouseover", function () {
+                $(this).css('cursor', 'pointer');
+            });
+            let contactListLink = $("#contactListLink")[0];
             if (!contactListLink) {
                 $(`<li id="contactListLink" class="nav-item">
           <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
-        </li>`).insertBefore("#loginListItem");
+          </li>`).insertBefore("#loginListItem");
             }
         }
         else {
             $("#loginListItem").html(`<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`);
-            if (contactListLink) {
-                $("#contactListLink").remove();
-            }
+            $("#login").on("click", function () {
+                loadLink("login");
+            });
+            $("#login").on("mouseover", function () {
+                $(this).css('cursor', 'pointer');
+            });
         }
-        addLinkEvents();
-        highlightActiveLink(router.ActiveLink);
     }
     function authGuard() {
         if (!sessionStorage.getItem("user")) {
             loadLink("login");
         }
     }
-    function display404() { }
+    function display404() {
+    }
     function ActiveLinkCallBack(activeLink) {
         switch (activeLink) {
-            case "home":
-                return displayHome;
-            case "about":
-                return displayAbout;
-            case "projects":
-                return displayProjects;
-            case "services":
-                return displayServices;
-            case "contact":
-                return displayContact;
-            case "contact-list":
-                return displayContactList;
-            case "edit":
-                return displayEdit;
-            case "login":
-                return displayLogin;
-            case "register":
-                return displayRegister;
-            case "404":
-                return display404;
+            case "home": return displayHome;
+            case "about": return displayAbout;
+            case "projects": return displayProjects;
+            case "services": return displayServices;
+            case "contact": return displayContact;
+            case "contact-list": return displayContactList;
+            case "edit": return displayEdit;
+            case "login": return displayLogin;
+            case "register": return displayRegister;
+            case "404": return display404;
             default:
                 console.error("ERROR: callback does not exist: " + activeLink);
                 break;
         }
     }
     function Start() {
+        console.log("App Started...");
         loadHeader(router.ActiveLink);
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
         loadFooter();

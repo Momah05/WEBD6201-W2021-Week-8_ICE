@@ -8,26 +8,28 @@ var core;
             loadLink($(this).attr("id"));
         });
         $("ul>li>a").on("mouseover", function () {
-            $(this).css("cursor", "pointer");
+            $(this).css('cursor', 'pointer');
         });
     }
+
     function highlightActiveLink(link) {
         $(`#${router.ActiveLink}`).removeClass("active");
         if (link == "logout") {
             sessionStorage.clear();
             router.ActiveLink = "login";
-        }
-        else {
+        } else {
             router.ActiveLink = link;
         }
         $(`#${router.ActiveLink}`).addClass("active");
     }
+
     function loadLink(link, data = "") {
         highlightActiveLink(link);
         router.LinkData = data;
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
         history.pushState({}, "", router.ActiveLink);
     }
+
     function loadHeader(pageName) {
         $.get("./Views/components/header.html", function (data) {
             $("header").html(data);
@@ -35,6 +37,7 @@ var core;
             addLinkEvents();
         });
     }
+
     function loadContent(pageName, callback) {
         $.get(`./Views/content/${pageName}.html`, function (data) {
             $("main").html(data);
@@ -42,68 +45,66 @@ var core;
             callback();
         });
     }
+
     function loadFooter() {
         $.get("./Views/components/footer.html", function (data) {
             $("footer").html(data);
         });
     }
-    function displayHome() { }
-    function displayAbout() { }
-    function displayProjects() { }
-    function displayServices() { }
+
+    function displayHome() {}
+
+    function displayAbout() {}
+
+    function displayProjects() {}
+
+    function displayServices() {}
+
     function testFullName() {
         let messageArea = $("#messageArea").hide();
         let fullNamePattern = /([A-Z][a-z]{1,25})+(\s|,|-)([A-Z][a-z]{1,25})+(\s|,|-)*/;
         $("#fullName").on("blur", function () {
             if (!fullNamePattern.test($(this).val().toString())) {
                 $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitlalized last name.");
-            }
-            else {
+                messageArea.show().addClass("alert alert-danger").text("Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitlalized last name.");
+            } else {
                 messageArea.removeAttr("class").hide();
             }
         });
     }
+
     function testContactNumber() {
         let messageArea = $("#messageArea");
         let contactNumberPattern = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
         $("#contactNumber").on("blur", function () {
             if (!contactNumberPattern.test($(this).val().toString())) {
                 $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Contact Number. Country code and area code are both optional");
-            }
-            else {
+                messageArea.show().addClass("alert alert-danger").text("Please enter a valid Contact Number. Country code and area code are both optional");
+            } else {
                 messageArea.removeAttr("class").hide();
             }
         });
     }
+
     function testEmailAddress() {
         let messageArea = $("#messageArea");
         let emailAddressPattern = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
         $("#emailAddress").on("blur", function () {
             if (!emailAddressPattern.test($(this).val().toString())) {
                 $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Email Address.");
-            }
-            else {
+                messageArea.show().addClass("alert alert-danger").text("Please enter a valid Email Address.");
+            } else {
                 messageArea.removeAttr("class").hide();
             }
         });
     }
+
     function formValidation() {
         testFullName();
         testContactNumber();
         testEmailAddress();
     }
+
     function displayContact() {
         formValidation();
         $("#sendButton").on("click", (event) => {
@@ -121,6 +122,7 @@ var core;
         });
         loadLink("contact");
     }
+
     function displayContactList() {
         authGuard();
         if (localStorage.length > 0) {
@@ -157,6 +159,7 @@ var core;
             });
         }
     }
+
     function displayEdit() {
         let key = router.LinkData;
         let contact = new core.Contact();
@@ -165,8 +168,7 @@ var core;
             $("#fullName").val(contact.FullName);
             $("#contactNumber").val(contact.ContactNumber);
             $("#emailAddress").val(contact.EmailAddress);
-        }
-        else {
+        } else {
             $("main>h1").text("Add Contact");
             $("#editButton").html(`<i class="fas fa-plus-circle fa-lg"></i> Add`);
         }
@@ -185,6 +187,7 @@ var core;
             loadLink("contact-list");
         });
     }
+
     function displayLogin() {
         let messageArea = $("#messageArea");
         messageArea.hide();
@@ -195,8 +198,7 @@ var core;
             let newUser = new core.User();
             $.get("./Data/users.json", function (data) {
                 for (const user of data.users) {
-                    if (username.val() == user.Username &&
-                        password.val() == user.Password) {
+                    if (username.val() == user.Username && password.val() == user.Password) {
                         newUser.fromJSON(user);
                         success = true;
                         break;
@@ -206,13 +208,9 @@ var core;
                     sessionStorage.setItem("user", newUser.serialize());
                     messageArea.removeAttr("class").hide();
                     loadLink("contact-list");
-                }
-                else {
+                } else {
                     username.trigger("focus").trigger("select");
-                    messageArea
-                        .show()
-                        .addClass("alert alert-danger")
-                        .text("Error: Invalid login information");
+                    messageArea.show().addClass("alert alert-danger").text("Error: Invalid login information");
                 }
             });
         });
@@ -221,7 +219,9 @@ var core;
             loadLink("home");
         });
     }
-    function displayRegister() { }
+
+    function displayRegister() {}
+
     function toggleLogin() {
         let contactListLink = $("#contactListLink")[0];
         if (sessionStorage.getItem("user")) {
@@ -231,8 +231,7 @@ var core;
           <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
         </li>`).insertBefore("#loginListItem");
             }
-        }
-        else {
+        } else {
             $("#loginListItem").html(`<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`);
             if (contactListLink) {
                 $("#contactListLink").remove();
@@ -241,12 +240,15 @@ var core;
         addLinkEvents();
         highlightActiveLink(router.ActiveLink);
     }
+
     function authGuard() {
         if (!sessionStorage.getItem("user")) {
             loadLink("login");
         }
     }
-    function display404() { }
+
+    function display404() {}
+
     function ActiveLinkCallBack(activeLink) {
         switch (activeLink) {
             case "home":
@@ -274,6 +276,7 @@ var core;
                 break;
         }
     }
+
     function Start() {
         loadHeader(router.ActiveLink);
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
